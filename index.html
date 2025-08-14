@@ -12452,22 +12452,46 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Desabilitar botões inicialmente
+    // Manter botões desabilitados no início
     setButtonsEnabled(false);
 
-    // Verificar se os dados de configuração foram carregados pelo sistema principal
-    const checkDataLoadedInterval = setInterval(function() {
-        if (window.allData && window.allData.config && window.allData.config.restaurant_whatsapp) {
-            clearInterval(checkDataLoadedInterval);
-            console.log('✅ Dados de configuração prontos. Habilitando botões de checkout.');
-            setButtonsEnabled(true);
-        } else {
-            // console.log('Aguardando dados de configuração...');
+    // Carregar e verificar a configuração diretamente
+    function loadConfigAndEnableButtons() {
+        if (typeof Papa === 'undefined' || typeof CONFIG_CSV_URL === 'undefined') {
+            console.error('❌ PapaParse ou CONFIG_CSV_URL não estão definidos. Não é possível carregar a configuração.');
+            return;
         }
-    }, 200);
 
-    // Parar a verificação após 20 segundos para evitar loop infinito
-    setTimeout(() => clearInterval(checkDataLoadedInterval), 20000);
+        Papa.parse(CONFIG_CSV_URL, {
+            download: true,
+            header: true,
+            complete: function(results) {
+                const configData = results.data;
+                let whatsappNumber = null;
+
+                // Encontrar o número do WhatsApp nos dados da configuração
+                for (const row of configData) {
+                    if (row.key && row.key.trim() === 'restaurant_whatsapp' && row.value) {
+                        whatsappNumber = row.value.trim();
+                        break;
+                    }
+                }
+
+                if (whatsappNumber) {
+                    console.log('✅ Configuração carregada via script de fallback. Habilitando botões.');
+                    setButtonsEnabled(true);
+                } else {
+                    console.error('❌ Chave "restaurant_whatsapp" não encontrada na configuração via script de fallback.');
+                }
+            },
+            error: function(error) {
+                console.error('❌ Falha ao carregar a configuração via script de fallback:', error);
+            }
+        });
+    }
+
+    // Iniciar o processo
+    loadConfigAndEnableButtons();
 });
 </script>
 </body>

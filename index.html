@@ -28,7 +28,6 @@
 ||                                                                   ||
 \\====================================================================//
 -->
-<!-- Versão 6.0.0 - Lógica de Carregamento Refatorada -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -43,7 +42,6 @@
 <!--   INSIRA ACIMA AS TAGS DE SEO -->
 
     <script src="config.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script>
         // Teste de carregamento do sistema localStorage
         document.addEventListener('DOMContentLoaded', function() {
@@ -165,7 +163,7 @@
             <!-- Main Info -->
             <div class="text-center mb-6">
                 <div class="mb-3">
-                    <h3 id="footer-company-name" class="text-2xl font-bold" style="color: var(--cor-texto) !important; font-weight: 700; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">🍽️ Cardápio Digital+</h3>
+                    <h3 id="footer-company-name" class="text-2xl font-bold" style="color: var(--cor-texto) !important; font-weight: 700; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">🍽️ Cardápio Digital</h3>
                 </div>
                 <p id="footer-address" class="mb-4 text-sm" style="color: var(--cor-texto-secundario) !important; font-weight: 500; opacity: 0.9;">Rua das Flores, 123 • Centro - Campinas/SP</p>
                 
@@ -331,7 +329,7 @@
                             <span class="text-lg font-bold">Total:</span>
                             <span class="text-xl font-bold" style="color: var(--cor-primaria) !important;" id="cart-modal-total">R$ 0,00</span>
                         </div>
-                        <button id="proceed-to-checkout-btn" disabled class="w-full text-white py-3 rounded-lg font-medium transition-colors cursor-not-allowed" style="background-color: #9ca3af !important;">
+                        <button onclick="proceedToCheckout()" class="w-full text-white py-3 rounded-lg font-medium transition-colors" style="background-color: var(--cor-primaria) !important;" onmouseover="this.style.backgroundColor='var(--cor-primaria-hover)'" onmouseout="this.style.backgroundColor='var(--cor-primaria)'">
                             Finalizar Pedido →
                         </button>
                     </div>
@@ -652,7 +650,7 @@
                         <button onclick="prevStep(2)" class="w-2/5 py-3 rounded-lg font-medium transition-colors" style="background-color: var(--cor-fundo-secundario) !important; color: var(--cor-texto) !important;" onmouseover="this.style.backgroundColor='var(--cor-borda)'" onmouseout="this.style.backgroundColor='var(--cor-fundo-secundario)'">
                             ← Voltar
                         </button>
-                        <button id="finalize-order-btn" disabled class="w-3/5 py-3 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 cursor-not-allowed" style="background-color: #9ca3af !important; color: white !important;">
+                        <button onclick="finalizeOrder()" class="w-3/5 py-3 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2" style="background-color: var(--cor-whatsapp) !important; color: white !important;" onmouseover="this.style.backgroundColor='var(--cor-whatsapp-hover)'" onmouseout="this.style.backgroundColor='var(--cor-whatsapp)'">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
                             </svg>
@@ -1057,31 +1055,28 @@
 
         // Function to load CSV data
         async function loadCSVData(url) {
-            let finalUrl = url;
-
-            // Se a URL for a de configuração, usar o proxy obrigatoriamente.
-            if (url === CONFIG_CSV_URL && typeof WEB_APP_URL !== 'undefined' && WEB_APP_URL) {
-                infoLog('Proxying config request via Web App.');
-                finalUrl = `${WEB_APP_URL}?url=${encodeURIComponent(url)}`;
-            }
-
-            if (!finalUrl || finalUrl.trim() === '') {
-                warnLog('URL de CSV vazia ou não definida.');
-                return [];
-            }
-
             try {
-                debugLog(`Carregando CSV de: ${finalUrl}`);
-                const response = await fetchWithCacheBuster(finalUrl);
+                debugLog('Loading CSV from:', url);
+                
+                const response = await fetch(url);
+                debugLog('Response status:', response.status);
+                
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
+                
                 const csvText = await response.text();
-                infoLog(`✅ CSV carregado com sucesso de: ${finalUrl}`);
-                return parseCSV(csvText);
+                debugLog('CSV loaded:', csvText.length, 'chars');
+                
+                const parsedData = parseCSV(csvText);
+                infoLog('Data loaded:', parsedData.length, 'items from', url.split('/').pop());
+                
+                return parsedData;
             } catch (error) {
-                errorLog(`❌ Falha ao carregar CSV de ${finalUrl}:`, error);
-                throw error; // Propaga o erro para ser tratado pelo chamador
+                errorLog('Error loading CSV data from', url, ':', error);
+
+                
+                throw error;
             }
         }
 
@@ -2273,10 +2268,19 @@
         /**
          * Função para fazer fetch com cache busting
          */
-        // Função de fetch simplificada que apenas adiciona um cache buster na URL
         function fetchWithCacheBuster(url, options = {}) {
             const cacheBustedUrl = addCacheBuster(url);
-            return fetch(cacheBustedUrl, options);
+            const fetchOptions = {
+                ...options,
+                cache: 'no-cache',
+                headers: {
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache',
+                    'Expires': '0',
+                    ...options.headers
+                }
+            };
+            return fetch(cacheBustedUrl, fetchOptions);
         }
         
         // Função para limpar localStorage e recarregar página
@@ -2366,7 +2370,7 @@
 
                 // Load configuration data first
                 infoLog('Loading configuration data...');
-                const configData = await loadCSVData(CONFIG_CSV_URL);
+                configData = await loadCSVData(CONFIG_CSV_URL);
                 appConfig = processConfigData(configData);
                 debugLog('Configuration loaded:', Object.keys(appConfig).length, 'sections');
                 
@@ -3579,9 +3583,8 @@
             if (typeof debugLog === 'function') {
                 debugLog('🛍️ Adding to cart:', productId, 'qty:', quantity);
             }
-
-            const numericProductId = parseInt(productId, 10);
-            const product = findProductById(numericProductId);
+            
+            const product = findProductById(productId);
             if (!product) {
                 if (typeof debugLog === 'function') {
                     debugLog('❌ Produto não encontrado:', productId);
@@ -8249,28 +8252,32 @@ function populateNeighborhoodSelect() {
             }, 300); // Delay to allow keyboard animation
         }
 
-                // Finalize order with enhanced validation
-                function finalizeOrder() {
+        // Finalize order with enhanced validation
+        function finalizeOrder() {
             // Collect customer data
             const customerName = document.getElementById('customer-name').value.trim();
             const paymentMethod = document.getElementById('payment-method').value;
             const customerWhatsApp = document.getElementById('customer-whatsapp').value.trim();
             
+            // Simple validation without loops
             let hasErrors = false;
             
+            // Clear any existing errors first
             clearFieldError('customer-name');
             clearFieldError('payment-method');
             clearFieldError('customer-whatsapp');
             
+            // Validate customer name
             if (!customerName || customerName.length < 2) {
                 showFieldError('customer-name', customerName ? 'Nome deve ter pelo menos 2 caracteres' : 'Nome completo é obrigatório');
                 hasErrors = true;
             }
             
+            // Validate WhatsApp if webhook is active
             if (isWebhookActive()) {
                 const countryCodeSelect = document.getElementById('country-code');
                 const selectedCountryCode = countryCodeSelect ? countryCodeSelect.value : '55';
-                const digitsOnly = customerWhatsApp.replace(/\D/g, '');
+                const digitsOnly = customerWhatsApp.replace(/\D/g, ''); // Extract only digits
                 const minDigits = getMinWhatsAppDigits(selectedCountryCode);
                 
                 if (!customerWhatsApp || digitsOnly.length < minDigits) {
@@ -8279,6 +8286,7 @@ function populateNeighborhoodSelect() {
                 }
             }
             
+            // Validate payment method only if payment methods are enabled AND not "Consumo no Local"
             const checkoutConfig = getCheckoutConfig();
             if (checkoutConfig.step3_show_formas_pag === 'Sim' && orderData.deliveryType !== 'local') {
                 if (!paymentMethod) {
@@ -8286,43 +8294,61 @@ function populateNeighborhoodSelect() {
                     hasErrors = true;
                 }
                 
+                // Validar valor do troco se pagamento for em dinheiro (OPCIONAL)
                 if (paymentMethod === 'dinheiro') {
+                    debugLog('=== VALIDANDO TROCO (OPCIONAL) ===');
                     const changeAmountInput = document.getElementById('change-amount');
                     const changeValue = changeAmountInput?.value?.trim() || '';
+                    
+                    debugLog('Change input:', changeAmountInput);
+                    debugLog('Change value:', changeValue);
+                    
                     clearFieldError('change-amount');
                     
+                    // Campo é OPCIONAL - só valida se foi preenchido
                     if (changeValue) {
                         const numericChangeValue = parseFloat(changeValue.replace(/[^\d,]/g, '').replace(',', '.'));
                         const cartTotal = calculateCartTotal();
+                        
+                        debugLog('Valor numérico do troco:', numericChangeValue);
+                        debugLog('Total do carrinho:', cartTotal);
                         
                         if (isNaN(numericChangeValue) || numericChangeValue <= 0) {
                             showFieldError('change-amount', 'Valor inválido para troco');
                             hasErrors = true;
                         } else if (numericChangeValue <= cartTotal) {
-                            showFieldError('change-amount', `Valor deve ser maior que ${formatCurrency(cartTotal)}.`);
+                            showFieldError('change-amount', 
+                                `Valor deve ser maior que ${formatCurrency(cartTotal)}.`);
                             hasErrors = true;
                         }
+                    } else {
+                        debugLog('Campo de troco vazio - assumindo que cliente tem troco exato');
                     }
                 }
             }
             
+            // If there are errors, stop here
             if (hasErrors) {
                 showToast('Por favor, preencha todos os campos obrigatórios', 'error');
                 return;
             }
             
+            // Verificar se cupom ainda é válido antes de finalizar
             if (appliedCoupon) {
                 if (!validateCouponDates(appliedCoupon)) {
+                    // Remover cupom expirado
                     clearCoupon();
                     showToast('⚠️ Cupom expirou durante o checkout. Confirme o pedido novamente.', 'warning', 5000);
-                    return;
+                    return; // Impedir finalização até usuário confirmar
                 }
             }
             
+            // Update order data only after validation passes
             orderData.customerName = customerName;
             orderData.paymentMethod = paymentMethod;
             orderData.changeAmount = document.getElementById('change-amount')?.value || '';
             orderData.notes = document.getElementById('order-notes').value;
+            // Add selected country code to WhatsApp number for sending
             if (customerWhatsApp) {
                 const countryCodeSelect = document.getElementById('country-code');
                 const selectedCountryCode = countryCodeSelect ? countryCodeSelect.value : '55';
@@ -8331,74 +8357,14 @@ function populateNeighborhoodSelect() {
                 orderData.customerWhatsApp = '';
             }
             
+            // Show success toast and proceed
             showToast('Preparando seu pedido...', 'success', 2000);
             
             setTimeout(() => {
-                const checkoutConfig = getCheckoutConfig();
-                const restaurantName = checkoutConfig.restaurant_name || 'Seu Restaurante';
-                const whatsappMessage = formatOrderMessage(restaurantName);
-
-                if (typeof WEB_APP_URL !== 'undefined' && WEB_APP_URL.trim() !== '') {
-                    sendToWebhook(whatsappMessage);
-                } else {
-                    sendToWhatsApp(whatsappMessage);
-                }
+                sendToWhatsApp();
             }, 1000);
         }
-        async function sendToWebhook(whatsappMessage) {
-            debugLog('🚀 Enviando pedido para o Webhook (Google Sheets)...');
 
-            const deliveryFeeElement = document.getElementById('delivery-fee-summary');
-            const deliveryFeeText = deliveryFeeElement ? deliveryFeeElement.textContent : '0';
-            const deliveryFee = parseFloat(deliveryFeeText.replace(/[^\d,.-]/g, '').replace(',', '.')) || 0;
-
-            const cartTotal = calculateCartTotal();
-            const finalTotal = cartTotal + deliveryFee - (appliedCoupon ? (appliedCoupon.desconto_valor || 0) : 0);
-
-            const payload = {
-                customerName: orderData.customerName,
-                customerPhone: orderData.customerWhatsApp,
-                customerAddress: `${orderData.deliveryType === 'delivery' ? `${orderData.address}, ${orderData.neighborhood}` : 'Retirada no local'}`,
-                items: cart.map(item => `${item.name} (x${item.quantity})`).join(', '),
-                total: formatCurrency(finalTotal),
-                paymentMethod: orderData.paymentMethod
-            };
-
-            try {
-                await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    cache: 'no-cache',
-                    headers: {'Content-Type': 'application/json'},
-                    redirect: 'follow',
-                    body: JSON.stringify(payload)
-                });
-
-                showToast('✅ Pedido enviado com sucesso!', 'success', 4000);
-
-                // Agora, envia a mensagem já formatada para o WhatsApp
-                sendToWhatsApp(whatsappMessage);
-
-                // Limpa o carrinho e fecha os modais após um tempo
-                setTimeout(() => {
-                    const checkoutModal = document.getElementById('checkout-modal');
-                    if (checkoutModal) {
-                        checkoutModal.classList.add('hidden');
-                    }
-                    const cartModal = document.getElementById('cart-modal');
-                    if (cartModal) {
-                        cartModal.classList.remove('flex');
-                        cartModal.classList.add('hidden');
-                    }
-                    clearCart();
-                    // A atualização da página foi removida conforme solicitado.
-                }, 4000);
-
-            } catch (error) {
-                errorLog('❌ Erro ao enviar pedido para o Webhook:', error);
-                showToast('Falha ao enviar o pedido. Tente novamente.', 'error', 5000);
-            }
-        }
         // Format money input
         // Currency configuration object
         const currencyConfig = {
@@ -8821,27 +8787,52 @@ function populateNeighborhoodSelect() {
             }
         }
 
-        function sendToWhatsApp(message) {
-            // Verificação robusta para garantir que os dados de configuração foram carregados.
-            if (typeof allData === 'undefined' || !allData.config || !allData.config[0] || !allData.config[0].restaurant_phone_number) {
-                errorLog('Falha no envio para o WhatsApp: a configuração ainda não foi carregada.');
-                showToast('Aguarde! O cardápio está carregando. Tente novamente em instantes.', 'warning');
-                return;
+        // Send to WhatsApp or Webhook
+        function sendToWhatsApp() {
+            if (cart.length === 0) return;
+            
+            // Get configuration data
+            const contactInfo = getContactInfo();
+            const envioConfig = getEnvioConfig();
+            const appConfig = getAppConfig();
+            
+            if (typeof debugLog === 'function') {
+                debugLog('=== DEBUG SEND TO WHATSAPP ===');
+                debugLog('envioConfig:', envioConfig);
+                debugLog('whatsapp_web value:', envioConfig.whatsapp_web);
+                debugLog('webhook_url:', envioConfig.webhook_url);
+                debugLog('contactInfo:', contactInfo);
+                debugLog('orderData:', orderData);
+                debugLog('cart:', cart);
+                debugLog('==============================');
             }
-
-            const restaurantWhatsApp = allData.config[0].restaurant_phone_number;
-
-            // Segunda verificação, apenas por segurança.
-            if (!restaurantWhatsApp) {
-                errorLog('ERRO CRÍTICO: Número do WhatsApp é inválido ou não foi configurado na planilha.');
-                showToast('Erro crítico: WhatsApp não configurado.', 'error');
-                return;
+            
+            // Get restaurant name and phone number from configuration
+            const restaurantName = appConfig.nome_restaurante || "Cardápio Digital";
+            const phoneNumber = contactInfo.whatsapp || "5519998021956";
+            
+            // Format the order message
+            const message = formatOrderMessage(restaurantName);
+            if (typeof debugLog === 'function') {
+                debugLog('Formatted message:', message);
             }
-
-            const encodedMessage = encodeURIComponent(message);
-            const whatsappUrl = `https://wa.me/${restaurantWhatsApp}?text=${encodedMessage}`;
-
-            window.open(whatsappUrl, '_blank');
+            
+            // Don't clear cart here - only clear after successful webhook/WhatsApp send
+            
+            // Check sending method based on configuration
+            if (envioConfig.whatsapp_web === 'Sim') {
+                if (typeof debugLog === 'function') {
+                    debugLog('Using WhatsApp Web method');
+                }
+                // Send via WhatsApp Web
+                sendViaWhatsAppWeb(phoneNumber, message);
+            } else {
+                if (typeof debugLog === 'function') {
+                    debugLog('Using Webhook method');
+                }
+                // Send via Webhook
+                sendViaWebhook(message, envioConfig.webhook_url);
+            }
         }
         
         // Format order message
@@ -12426,6 +12417,7 @@ if (document.readyState === 'loading') {
     setTimeout(adjustShareButtonPosition, 500);
 }
 </script>
+
 
 
 </body>

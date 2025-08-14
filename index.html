@@ -1079,7 +1079,8 @@
                     warnLog(`Iniciando 2ª tentativa para config via Proxy: ${WEB_APP_URL}`);
                     try {
                         const proxyUrl = `${WEB_APP_URL}?url=${encodeURIComponent(url)}`;
-                        const response = await fetchWithCacheBuster(proxyUrl);
+                        // Usa a função de fetch específica para o proxy
+                        const response = await fetchProxyWithCacheBuster(proxyUrl);
                         if (!response.ok) {
                             throw new Error(`HTTP error no proxy! status: ${response.status}`);
                         }
@@ -2299,6 +2300,15 @@
                 }
             };
             return fetch(cacheBustedUrl, fetchOptions);
+        }
+
+        /**
+         * Função para fazer fetch no proxy SEM cabeçalhos de cache extras
+         */
+        function fetchProxyWithCacheBuster(url, options = {}) {
+            const cacheBustedUrl = addCacheBuster(url);
+            // Para o proxy, não enviamos headers de cache que causam erro de CORS no preflight
+            return fetch(cacheBustedUrl, options);
         }
         
         // Função para limpar localStorage e recarregar página

@@ -12452,51 +12452,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Desabilitar botões inicialmente
     setButtonsEnabled(false);
 
-    function loadConfigAndEnableButtons() {
-        Papa.parse(CONFIG_CSV_URL, {
-            download: true,
-            header: true,
-            complete: function(results) {
-                const configData = results.data;
-                let whatsappNumber = null;
-
-                for (const row of configData) {
-                    if (row.key && row.key.trim() === 'restaurant_whatsapp' && row.value) {
-                        whatsappNumber = row.value.trim();
-                        break;
-                    }
-                }
-
-                if (whatsappNumber) {
-                    console.log('✅ Configuração carregada. Habilitando botões de checkout.');
-                    setButtonsEnabled(true);
-                } else {
-                    console.error('❌ Chave "restaurant_whatsapp" não encontrada na configuração.');
-                    setButtonsEnabled(false);
-                }
-            },
-            error: function(error) {
-                console.error('❌ Falha ao carregar a configuração:', error);
-                setButtonsEnabled(false);
-            }
-        });
-    }
-
-    const checkDependenciesInterval = setInterval(function() {
-        if (typeof Papa !== 'undefined' && typeof CONFIG_CSV_URL !== 'undefined') {
-            clearInterval(checkDependenciesInterval);
-            console.log('✅ Dependências (PapaParse, config.js) carregadas. Iniciando carregamento da configuração.');
-            loadConfigAndEnableButtons();
+    // Verificar se os dados de configuração foram carregados pelo sistema principal
+    const checkDataLoadedInterval = setInterval(function() {
+        if (window.allData && window.allData.config && window.allData.config.restaurant_whatsapp) {
+            clearInterval(checkDataLoadedInterval);
+            console.log('✅ Dados de configuração prontos. Habilitando botões de checkout.');
+            setButtonsEnabled(true);
         } else {
-            console.log('Aguardando dependências (PapaParse, config.js)...');
+            // console.log('Aguardando dados de configuração...');
         }
     }, 200);
 
-    setTimeout(function() {
-        clearInterval(checkDependenciesInterval);
-    }, 20000); // Parar após 20 segundos
+    // Parar a verificação após 20 segundos para evitar loop infinito
+    setTimeout(() => clearInterval(checkDataLoadedInterval), 20000);
 });
 </script>
 </body>

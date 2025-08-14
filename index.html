@@ -1055,30 +1055,47 @@
         }
 
         // Function to load CSV data
-        async function loadCSVData(url) {
+        async function loadCSVData(url, isConfig = false) {
+            if (!url || url.trim() === '') {
+                warnLog('URL de CSV vazia ou não definida.');
+                return [];
+            }
+
+            // Primeira tentativa: carregar diretamente
             try {
-                debugLog('Loading CSV from:', url);
-                
-                const response = await fetch(url);
-                debugLog('Response status:', response.status);
-                
+                debugLog(`1ª Tentativa de carregar CSV de: ${url}`)
+                const response = await fetchWithCacheBuster(url);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
                 const csvText = await response.text();
-                debugLog('CSV loaded:', csvText.length, 'chars');
-                
-                const parsedData = parseCSV(csvText);
-                infoLog('Data loaded:', parsedData.length, 'items from', url.split('/').pop());
-                
-                return parsedData;
+                infoLog(`✅ CSV carregado diretamente de: ${url}`)
+                return parseCSV(csvText);
             } catch (error) {
-                errorLog('Error loading CSV data from', url, ':', error);
+                errorLog(`Falha na 1ª tentativa de carregar CSV de ${url}:`, error);
 
+                // Se for o arquivo de configuração, tenta o fallback via Web App
+                if (isConfig && typeof WEB_APP_URL !== 'undefined' && WEB_APP_URL) {
+                    warnLog(`Iniciando 2ª tentativa para config via Proxy: ${WEB_APP_URL}`);
+                    try {
+                        const proxyUrl = `${WEB_APP_URL}?url=${encodeURIComponent(url)}`;
+                        const response = await fetchWithCacheBuster(proxyUrl);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error no proxy! status: ${response.status}`);
+                        }
+                        const csvText = await response.text();
+                        infoLog(`✅ CSV de configuração carregado via Proxy: ${proxyUrl}`);
+                        return parseCSV(csvText); // Retorna o sucesso do fallback
+                    } catch (proxyError) {
+                        errorLog(`❌ Falha total ao carregar CSV de config via Proxy:`, proxyError);
+                        // Se o proxy também falhar, lança o erro do proxy para ser pego pelo loadAllData
+                        throw proxyError; 
+                    }
+                }
                 
+                // Se não for o arquivo de config, ou se WEB_APP_URL não estiver definido, lança o erro original
                 throw error;
-            }
+            }    
         }
 
         // Function to process configuration data
@@ -2371,7 +2388,7 @@
 
                 // Load configuration data first
                 infoLog('Loading configuration data...');
-                configData = await loadCSVData(CONFIG_CSV_URL);
+                configData = await loadCSVData(CONFIG_CSV_URL, true); // Passa true para indicar que é o arquivo de config
                 appConfig = processConfigData(configData);
                 debugLog('Configuration loaded:', Object.keys(appConfig).length, 'sections');
                 
@@ -12433,66 +12450,5 @@ if (document.readyState === 'loading') {
 </script>
 
 
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const checkoutButtons = [
-        document.getElementById('proceed-to-checkout-btn'),
-        document.getElementById('finalize-order-btn')
-    ];
-
-    function setButtonsEnabled(enabled) {
-        checkoutButtons.forEach(button => {
-            if (button) {
-                button.disabled = !enabled;
-                button.style.opacity = enabled ? '1' : '0.5';
-                button.style.cursor = enabled ? 'pointer' : 'not-allowed';
-            }
-        });
-    }
-
-    // Manter botões desabilitados no início
-    setButtonsEnabled(false);
-
-    // Carregar e verificar a configuração diretamente
-    function loadConfigAndEnableButtons() {
-        if (typeof Papa === 'undefined' || typeof CONFIG_CSV_URL === 'undefined') {
-            console.error('❌ PapaParse ou CONFIG_CSV_URL não estão definidos. Não é possível carregar a configuração.');
-            return;
-        }
-
-        Papa.parse(CONFIG_CSV_URL, {
-            download: true,
-            header: true,
-            complete: function(results) {
-                const configData = results.data;
-                let whatsappNumber = null;
-
-                // Encontrar o número do WhatsApp nos dados da configuração
-                for (const row of configData) {
-                    if (row.key && row.key.trim() === 'restaurant_whatsapp' && row.value) {
-                        whatsappNumber = row.value.trim();
-                        break;
-                    }
-                }
-
-                if (whatsappNumber) {
-                    console.log('✅ Configuração carregada via script de fallback. Habilitando botões.');
-                    setButtonsEnabled(true);
-                } else {
-                    console.error('❌ Chave "restaurant_whatsapp" não encontrada na configuração via script de fallback.');
-                }
-            },
-            error: function(error) {
-                console.error('❌ Falha ao carregar a configuração via script de fallback:', error);
-            }
-        });
-    }
-
-    // Iniciar o processo
-    loadConfigAndEnableButtons();
-});
-</script>
 </body>
 </html>

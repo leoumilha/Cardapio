@@ -47,20 +47,6 @@
 
 <!--   INSIRA ACIMA AS TAGS DE SEO -->
 
-    <script src="config.js"></script>
-    <script>
-        // Teste de carregamento do sistema localStorage
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => {
-                debugLog('🧪 Testando sistema localStorage...');
-                debugLog('✅ initializeStorageSystem:', typeof initializeStorageSystem);
-                debugLog('✅ saveCartToStorage:', typeof saveCartToStorage);
-                debugLog('✅ loadCartFromStorage:', typeof loadCartFromStorage);
-                debugLog('✅ saveCouponToStorage:', typeof saveCouponToStorage);
-                debugLog('✅ Sistema localStorage carregado com sucesso!');
-            }, 500);
-        });
-    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- QR Code Library -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
@@ -1523,6 +1509,7 @@
         </div>
     </div>
 
+    <script src="config.js"></script>
     <script>
         // Global variables for menu data
         let menuData = {};
@@ -6782,10 +6769,10 @@ function populateNeighborhoodSelect() {
                 const existingFeedback = changeInput.parentNode.querySelector('.change-feedback');
                 if (existingFeedback) {
                     existingFeedback.remove();
-                    debugLog('🧹 Label de cálculo do troco removido');
+                    debugLog(' Label de cálculo do troco removido');
                 }
                 
-                debugLog('🧹 Campo de troco resetado completamente (input + label)');
+                debugLog(' Campo de troco resetado completamente (input + label)');
             }
         }
         
@@ -8866,7 +8853,7 @@ function populateNeighborhoodSelect() {
         // Finalize order with enhanced validation
         // Função para enviar o pedido para o Google Script
         function sendOrderToGoogleScript() {
-            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbwnkImdA5235Nc5UL3vK-PYrfctaZOOvB7pwCnbH8dYHswhq88QXLgwP9Ca_va7vsWc/exec') {
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'COLE_A_URL_DO_SEU_APP_SCRIPT_AQUI') {
                 console.warn('URL do Google Script não configurada. O pedido não será salvo na planilha.');
                 return;
             }

@@ -1055,48 +1055,25 @@
         }
 
         // Function to load CSV data
-        async function loadCSVData(url, isConfig = false) {
+        async function loadCSVData(url) {
             if (!url || url.trim() === '') {
                 warnLog('URL de CSV vazia ou não definida.');
                 return [];
             }
 
-            // Primeira tentativa: carregar diretamente
             try {
-                debugLog(`1ª Tentativa de carregar CSV de: ${url}`)
+                debugLog(`Carregando CSV de: ${url}`);
                 const response = await fetchWithCacheBuster(url);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const csvText = await response.text();
-                infoLog(`✅ CSV carregado diretamente de: ${url}`)
+                infoLog(`✅ CSV carregado com sucesso de: ${url}`);
                 return parseCSV(csvText);
             } catch (error) {
-                errorLog(`Falha na 1ª tentativa de carregar CSV de ${url}:`, error);
-
-                // Se for o arquivo de configuração, tenta o fallback via Web App
-                if (isConfig && typeof WEB_APP_URL !== 'undefined' && WEB_APP_URL) {
-                    warnLog(`Iniciando 2ª tentativa para config via Proxy: ${WEB_APP_URL}`);
-                    try {
-                        const proxyUrl = `${WEB_APP_URL}?url=${encodeURIComponent(url)}`;
-                        // Usa a função de fetch específica para o proxy
-                        const response = await fetchProxyWithCacheBuster(proxyUrl);
-                        if (!response.ok) {
-                            throw new Error(`HTTP error no proxy! status: ${response.status}`);
-                        }
-                        const csvText = await response.text();
-                        infoLog(`✅ CSV de configuração carregado via Proxy: ${proxyUrl}`);
-                        return parseCSV(csvText); // Retorna o sucesso do fallback
-                    } catch (proxyError) {
-                        errorLog(`❌ Falha total ao carregar CSV de config via Proxy:`, proxyError);
-                        // Se o proxy também falhar, lança o erro do proxy para ser pego pelo loadAllData
-                        throw proxyError; 
-                    }
-                }
-                
-                // Se não for o arquivo de config, ou se WEB_APP_URL não estiver definido, lança o erro original
-                throw error;
-            }    
+                errorLog(`❌ Falha ao carregar CSV de ${url}:`, error);
+                throw error; // Propaga o erro para ser tratado pelo chamador
+            }
         }
 
         // Function to process configuration data
@@ -2287,27 +2264,9 @@
         /**
          * Função para fazer fetch com cache busting
          */
+        // Função de fetch simplificada que apenas adiciona um cache buster na URL
         function fetchWithCacheBuster(url, options = {}) {
             const cacheBustedUrl = addCacheBuster(url);
-            const fetchOptions = {
-                ...options,
-                cache: 'no-cache',
-                headers: {
-                    'Cache-Control': 'no-cache, no-store, must-revalidate',
-                    'Pragma': 'no-cache',
-                    'Expires': '0',
-                    ...options.headers
-                }
-            };
-            return fetch(cacheBustedUrl, fetchOptions);
-        }
-
-        /**
-         * Função para fazer fetch no proxy SEM cabeçalhos de cache extras
-         */
-        function fetchProxyWithCacheBuster(url, options = {}) {
-            const cacheBustedUrl = addCacheBuster(url);
-            // Para o proxy, não enviamos headers de cache que causam erro de CORS no preflight
             return fetch(cacheBustedUrl, options);
         }
         
@@ -2398,7 +2357,9 @@
 
                 // Load configuration data first
                 infoLog('Loading configuration data...');
-                configData = await loadCSVData(CONFIG_CSV_URL, true); // Passa true para indicar que é o arquivo de config
+                // Para a configuração, usamos o proxy diretamente para evitar CORS
+                const proxyConfigUrl = `${WEB_APP_URL}?url=${encodeURIComponent(CONFIG_CSV_URL)}`;
+                const configData = await loadCSVData(proxyConfigUrl); // Passa true para indicar que é o arquivo de config
                 appConfig = processConfigData(configData);
                 debugLog('Configuration loaded:', Object.keys(appConfig).length, 'sections');
                 

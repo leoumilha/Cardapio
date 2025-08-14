@@ -45,7 +45,7 @@ const COUPONS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSF31jz
 const REQUESTS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSF31jz_9YBE_Ae5dZiZc1hjsfy3orqrEuyImmmS18DiPf4E9BQeocWAfRercKpvfYP3qQAsTPGiOQx/pub?gid=528962129&single=true&output=csv';
 
 // URL do Web App (Google Apps Script) para receber os pedidos
-const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbztrHa3TnOwQ-WYDSjPM1VD9MWzSkRM-N4vJjV9H12WabQKzzDFcoDUFklGF3Wik3vb/exec'; // <<====== ATENÇÃO: PREENCHA COM A URL DO SEU SCRIPT
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbztrHa3TnOwQ-WYDSjPM1VD9MWzSkRM-N4vJjV9H12WabQKzzDFcoDUFklGF3Wik3vb/exec'; 
 
 
 // ====================================================================

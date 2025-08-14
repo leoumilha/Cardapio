@@ -119,6 +119,7 @@ async function fetchData() {
         }, {});
 
         infoLog('✅ Todos os dados das planilhas foram recebidos e processados.');
+        debugLog('Dados recebidos:', allData);
         processData(allData.items, allData.categories, allData.config, allData.hours, allData.neighborhoods, allData.coupons);
 
     } catch (error) {
@@ -198,6 +199,7 @@ function processData(items, categoriesData, configData, hoursData, neighborhoods
     }
 
     // 3. Render the main parts of the menu
+    debugLog('Estrutura de categorias antes de renderizar:', categories);
     renderMenu(categories);
     renderCategoriesNav(categories);
 

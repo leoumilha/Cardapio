@@ -44,6 +44,10 @@ const COUPONS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSF31jz
 
 const REQUESTS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSF31jz_9YBE_Ae5dZiZc1hjsfy3orqrEuyImmmS18DiPf4E9BQeocWAfRercKpvfYP3qQAsTPGiOQx/pub?gid=528962129&single=true&output=csv';
 
+// URL do Script do Google para salvar pedidos
+// ⚠️ COLE AQUI A URL DO SEU APP SCRIPT PUBLICADO
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwnkImdA5235Nc5UL3vK-PYrfctaZOOvB7pwCnbH8dYHswhq88QXLgwP9Ca_va7vsWc/exec';
+
 
 
 // ====================================================================

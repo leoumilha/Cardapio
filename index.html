@@ -42,7 +42,10 @@
 <!--   INSIRA ABAIXO AS TAGS DE SEO -->
 <!--   INSIRA ACIMA AS TAGS DE SEO -->
 
-    <script src="config.js"></script>
+    <script>
+        // Cache-busting agressivo para garantir que o config.js mais recente seja sempre carregado
+        document.write('<script src="config.js?' + new Date().getTime() + '"><\/script>');
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script>
         // Teste de carregamento do sistema localStorage

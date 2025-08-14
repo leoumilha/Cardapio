@@ -8866,7 +8866,7 @@ function populateNeighborhoodSelect() {
         // Finalize order with enhanced validation
         // Função para enviar o pedido para o Google Script
         function sendOrderToGoogleScript() {
-            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'COLE_A_URL_DO_SEU_APP_SCRIPT_AQUI') {
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbwnkImdA5235Nc5UL3vK-PYrfctaZOOvB7pwCnbH8dYHswhq88QXLgwP9Ca_va7vsWc/exec') {
                 console.warn('URL do Google Script não configurada. O pedido não será salvo na planilha.');
                 return;
             }
@@ -8881,11 +8881,6 @@ function populateNeighborhoodSelect() {
 
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors', // Importante para evitar erros de CORS com o Google Script
-                cache: 'no-cache',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
                 body: JSON.stringify(orderPayload)
             })
             .then(response => {

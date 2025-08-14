@@ -1,0 +1,596 @@
+     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        /* ===== ANTI-FLASH: OCULTAR CONTEÚDO ATÉ CARREGAMENTO COMPLETO ===== */
+        body {
+            visibility: hidden;
+        }
+        
+        body.loaded {
+            visibility: visible;
+        }
+        
+        /* Garantir que o preloader seja sempre visível */
+        #preloader {
+            visibility: visible !important;
+        }
+        
+        /* Fallback: mostrar conteúdo após 10 segundos mesmo se JS falhar */
+        body {
+            animation: showContentFallback 0s 10s forwards;
+        }
+        
+        @keyframes showContentFallback {
+            to {
+                visibility: visible;
+            }
+        }
+        
+        :root {
+            /* ===== CORES PRINCIPAIS - ESTILO iFOOD ===== */
+            --cor-primaria: #EA1D2C;           /* Vermelho iFood - mais quente e apetitoso */
+            --cor-primaria-escura: #D01625;    /* Vermelho escuro iFood */
+            --cor-secundaria: #FF6B35;         /* Laranja vibrante - estimula apetite */
+            --cor-secundaria-escura: #E55A2B;  /* Laranja escuro */
+            --cor-terciaria: #FFB800;          /* Amarelo dourado - para destaques */
+            --cor-terciaria-escura: #E6A600;   /* Amarelo escuro */
+            --cor-accent: #4CAF50;             /* Verde sucesso - confirmações */
+            --cor-accent-escura: #45A049;      /* Verde escuro */
+            --cor-whatsapp: #25D366;           /* Verde WhatsApp */
+            --cor-whatsapp-escura: #128C7E;    /* Verde WhatsApp escuro */
+            
+            /* ===== CORES DE FUNDO - MAIS CLEAN ===== */
+            --cor-fundo: #FAFAFA;              /* Fundo mais clean que branco puro */
+            --cor-fundo-branco: #FFFFFF;       /* Branco puro para cards */
+            --cor-fundo-card: #FFFFFF;         /* Cards em branco puro */
+            --cor-fundo-modal: rgba(0, 0, 0, 0.9); /* Fundo modal escuro */
+            
+            /* ===== CORES DE TEXTO - MELHOR CONTRASTE ===== */
+            --cor-texto: #1A1A1A;              /* Texto principal - mais escuro */
+            --cor-texto-secundario: #6B7280;   /* Texto secundário */
+            --cor-texto-claro: #9CA3AF;        /* Texto claro */
+            --cor-texto-branco: #FFFFFF;       /* Texto branco */
+            --cor-texto-destaque: #EA1D2C;     /* Texto destaque vermelho */
+            
+            /* ===== CORES DE BORDA - MAIS SUAVES ===== */
+            --cor-borda: #E5E7EB;              /* Borda padrão */
+            --cor-borda-clara: #F3F4F6;        /* Borda clara */
+            --cor-borda-escura: #D1D5DB;       /* Borda escura */
+            --cor-borda-destaque: #EA1D2C;     /* Borda destaque */
+            
+            /* ===== CORES DE ESTADO - FOOD FRIENDLY ===== */
+            --cor-sucesso: #4CAF50;            /* Verde sucesso */
+            --cor-sucesso-fundo: #E8F5E9;      /* Fundo verde claro */
+            --cor-erro: #F44336;               /* Vermelho erro */
+            --cor-erro-fundo: #FFEBEE;         /* Fundo vermelho claro */
+            --cor-aviso: #FFB800;              /* Amarelo aviso */
+            --cor-aviso-fundo: #FFF8E1;        /* Fundo amarelo claro */
+            --cor-info: #2196F3;               /* Azul informação */
+            --cor-info-fundo: #E3F2FD;         /* Fundo azul claro */
+            
+            /* ===== TRANSPARÊNCIAS - MAIS MODERNAS ===== */
+            --transparencia-backdrop: rgba(255, 255, 255, 0.95); /* Backdrop blur */
+            --transparencia-sombra: rgba(0, 0, 0, 0.08);          /* Sombra padrão mais sutil */
+            --transparencia-sombra-forte: rgba(0, 0, 0, 0.12);    /* Sombra forte */
+            --transparencia-hover: rgba(234, 29, 44, 0.08);       /* Hover com cor primária */
+            --transparencia-whatsapp: rgba(37, 211, 102, 0.3);    /* Sombra WhatsApp */
+            --transparencia-whatsapp-escura: rgba(18, 140, 126, 0.4); /* Sombra WhatsApp escura */
+            --transparencia-primaria: rgba(234, 29, 44, 0.1);     /* Transparência primária */
+            --transparencia-secundaria: rgba(255, 107, 53, 0.1);  /* Transparência secundária */
+            
+            /* ===== SOMBRAS - ESTILO iFOOD ===== */
+            --sombra-card: 0 4px 12px rgba(0, 0, 0, 0.08);        /* Sombra card mais sutil */
+            --sombra-card-hover: 0 8px 24px rgba(0, 0, 0, 0.12);  /* Sombra hover */
+            --sombra-botao: 0 4px 16px rgba(234, 29, 44, 0.3);    /* Sombra botão colorida */
+            --sombra-botao-hover: 0 6px 20px rgba(234, 29, 44, 0.4); /* Sombra botão hover */
+            --sombra-modal: 0 20px 60px rgba(0, 0, 0, 0.5);       /* Sombra modal */
+            --sombra-toast: 0 10px 25px rgba(0, 0, 0, 0.15);      /* Sombra toast */
+            
+            /* ===== GRADIENTES MODERNOS - ESTILO iFOOD ===== */
+            --gradiente-primario: linear-gradient(135deg, #EA1D2C 0%, #FF6B35 100%);     /* Vermelho para laranja */
+            --gradiente-secundario: linear-gradient(135deg, #FF6B35 0%, #FFB800 100%);   /* Laranja para amarelo */
+            --gradiente-terciario: linear-gradient(135deg, #FFB800 0%, #FFC107 100%);    /* Amarelo dourado */
+            --gradiente-sucesso: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);      /* Verde sucesso */
+            --gradiente-whatsapp: linear-gradient(135deg, #25D366 0%, #128C7E 100%);     /* WhatsApp */
+            --gradiente-card: linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 100%);         /* Card sutil */
+            
+            /* ===== GRADIENTES HOVER - MAIS INTENSOS ===== */
+            --gradiente-primario-hover: linear-gradient(135deg, #D01625 0%, #E55A2B 100%);
+            --gradiente-secundario-hover: linear-gradient(135deg, #E55A2B 0%, #E6A600 100%);
+            --gradiente-sucesso-hover: linear-gradient(135deg, #45A049 0%, #5CB85C 100%);
+        }
+        
+        body { font-family: 'Inter', sans-serif; }
+        
+        .category-nav {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        
+        /* Ajuste de posicionamento para mobile */
+        @media (max-width: 768px) {
+            .category-nav {
+                top: 88px !important;
+            }
+        }
+        
+        /* Melhorar renderização no desktop */
+        @media (min-width: 769px) {
+            .category-nav {
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(8px);
+            }
+        }
+        
+        /* Setas de navegação das categorias */
+        .nav-arrow {
+            transition: opacity 0.3s ease, transform 0.2s ease;
+        }
+        
+        .nav-arrow:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-arrow:active {
+            transform: scale(0.95);
+        }
+        
+        /* Smooth scroll para o container das categorias */
+        #category-nav {
+            scroll-behavior: smooth;
+        }
+        
+        /* Garantir que as setas fiquem fixas */
+        #nav-arrow-left,
+        #nav-arrow-right {
+            flex-shrink: 0;
+        }
+        
+        .category-item {
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        /* Hide scrollbar for category navigation */
+        .scrollbar-hide {
+            -ms-overflow-style: none;  /* Internet Explorer 10+ */
+            scrollbar-width: none;  /* Firefox */
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;  /* Safari and Chrome */
+        }
+        
+        .category-item.active {
+            background: var(--cor-primaria);
+            color: var(--cor-texto-branco);
+        }
+        
+        /* Estilo específico para o botão de busca (lupa) */
+        .search-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 40px;
+            padding: 0 12px;
+            border-radius: 20px;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            color: #64748b;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        
+        .search-button:hover {
+            background: #e2e8f0;
+            border-color: #94a3b8;
+            color: #475569;
+        }
+        
+        .search-button:active {
+            background: #cbd5e1;
+        }
+        
+        /* Responsividade para o botão de busca */
+        @media (max-width: 768px) {
+            .search-button {
+                min-width: 36px;
+                height: 36px;
+                padding: 0 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .search-button {
+                min-width: 34px;
+                height: 34px;
+                padding: 0 8px;
+            }
+        }
+        
+        .food-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .food-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-card);
+        }
+        
+        .cart-fab {
+            position: fixed;
+            bottom: 30px;
+            right: 20px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 160px;
+            height: 64px;
+            border-radius: 32px;
+            box-shadow: 0 8px 25px var(--transparencia-whatsapp);
+            backdrop-filter: blur(10px);
+        }
+        
+        .cart-fab:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px var(--transparencia-whatsapp-escura);
+        }
+        
+        .modal-overlay {
+            backdrop-filter: blur(5px);
+        }
+        
+        .quantity-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .quantity-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .modal-footer {
+            position: sticky;
+            bottom: 0;
+            background: var(--cor-fundo-branco);
+            border-top: 1px solid var(--cor-borda);
+            padding: 16px 20px;
+            margin: 0 -24px -24px -24px;
+            border-radius: 0 0 16px 16px;
+            box-shadow: 0 -4px 6px -1px var(--transparencia-sombra);
+            z-index: 10;
+        }
+        
+        @media (max-width: 640px) {
+            #header-slogan {
+                font-size: 0.65rem !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .modal-footer {
+                padding: 16px 20px;
+                margin: 0 -20px -20px -20px;
+            }
+        }
+        
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* ===== CUPOM EXPANSÍVEL - TRANSIÇÕES SUAVES ===== */
+        .coupon-toggle-btn {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .coupon-toggle-btn:hover {
+            background-color: var(--cor-fundo-card);
+            transform: translateY(-1px);
+            box-shadow: var(--sombra-card);
+        }
+        
+        .coupon-toggle-btn:active {
+            transform: translateY(0);
+        }
+        
+        .coupon-field-container {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .coupon-arrow {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .bounce {
+            animation: bounce 0.6s ease;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .shake {
+            animation: shake 0.6s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
+        }
+        
+        .shake-animation {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        .field-error {
+            border-color: var(--cor-erro) !important;
+            background-color: var(--cor-erro-fundo) !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+            border-width: 2px !important;
+        }
+        
+        .error-message {
+            color: var(--cor-erro);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes gradientRotate {
+            0% {
+                background-position: 0% 50%, 0% 0%;
+            }
+            25% {
+                background-position: 0% 50%, 100% 0%;
+            }
+            50% {
+                background-position: 0% 50%, 100% 100%;
+            }
+            75% {
+                background-position: 0% 50%, 0% 100%;
+            }
+            100% {
+                background-position: 0% 50%, 0% 0%;
+            }
+        }
+        
+        @keyframes smoothSpin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            max-width: 400px;
+            width: 90%;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: var(--sombra-toast);
+            backdrop-filter: blur(10px);
+            animation: toastSlideIn 0.4s ease-out;
+        }
+        
+        .toast-error {
+            background: var(--gradiente-primario);
+            color: var(--cor-texto-branco);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .toast-success {
+            background: linear-gradient(135deg, var(--cor-primaria), var(--cor-secundaria)) !important;
+            color: white !important;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important;
+        }
+        
+        /* Lightbox Styles */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--cor-fundo-modal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .lightbox.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        
+        .lightbox.active .lightbox-content {
+            transform: scale(1);
+        }
+        
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--cor-texto);
+            transition: all 0.2s ease;
+        }
+        
+        .lightbox-close:hover {
+            background: var(--cor-fundo-branco);
+            transform: scale(1.1);
+        }
+        
+        .lightbox-title {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: var(--cor-texto-branco);
+            font-size: 16px;
+            font-weight: 500;
+        }
+           
+        
+        .toast-warning {
+            background: var(--gradiente-terciario);
+            color: var(--cor-texto-branco);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+        
+        .toast-exit {
+            animation: toastSlideOut 0.3s ease-in forwards;
+        }
+        
+        @keyframes toastSlideOut {
+            to {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+        }
+        
+        /* Lazy Loading Styles */
+        .lazy-image {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .lazy-image.loaded {
+            opacity: 1;
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        
+        /* Checkout disabled styles */
+        .checkout-disabled .add-to-cart-btn,
+        .checkout-disabled .quantity-controls,
+        .checkout-disabled .cart-fab,
+        .checkout-disabled .cart-count,
+        .checkout-disabled .add-btn,
+        .checkout-disabled .modal-footer,
+        .checkout-disabled .quantity-btn {
+            display: none !important;
+        }
+        
+        .checkout-disabled .food-card {
+            cursor: default;
+        }
+        
+        .checkout-disabled .food-card:hover {
+            transform: none;
+        }
+        
+        /* Animação pulse para badge de desconto */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.9;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+     

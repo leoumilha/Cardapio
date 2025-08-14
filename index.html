@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Cardápio Sheets</title>
+    <script src="config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body style="background-color: var(--cor-fundo) !important;">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-40">
+        <div class="max-w-4xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity" onclick="window.location.reload()" title="Recarregar página">
+                    <img id="header-logo" src="" alt="Logo" class="object-cover rounded-lg cursor-pointer" style="display: none; width: 55px; height: 55px;" onerror="this.style.display='none'" onclick="clearStorageAndReload()" title="Clique para limpar cache e recarregar">
+                    <div>
+                        <h1 id="header-company-name" class="text-base sm:text-2xl font-bold" style="color: var(--cor-primaria) !important;">Cardápio Digital</h1>
+                        <p id="header-slogan" class="text-xs sm:text-base" style="color: var(--cor-texto) !important;" >Slogan da Empresa</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="text-right cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors" onclick="openHoursModal()" id="hours-indicator" style="font-size: 0.85rem;">
+                        <div class="flex items-center space-x-2">
+                            <div id="status-dot" class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <div class="font-medium" style="color: var(--cor-secundaria) !important;" id="status-text">Aberto</div>
+                        </div>
+                        <div style="color: var(--cor-texto) !important;" id="hours-text">até 23h</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Categories Navigation -->
+    <nav class="category-nav fixed top-[89px] left-0 right-0 z-30 bg-white" style="border-bottom: 1px solid var(--cor-borda) !important;">
+        <div class="max-w-4xl mx-auto px-4 py-3">
+            <div class="relative flex items-center">
+                <button id="nav-arrow-left" class="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-md border border-gray-200 hover:bg-gray-50 transition-all duration-200 mr-2 z-10 nav-arrow" style="opacity: 0; pointer-events: none;">
+                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <div class="flex space-x-2 overflow-x-auto scrollbar-hide flex-1" id="category-buttons">
+                    <!-- Categories will be populated dynamically -->
+                </div>
+                <button id="nav-arrow-right" class="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-md border border-gray-200 hover:bg-gray-50 transition-all duration-200 ml-2 z-10 nav-arrow">
+                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Menu Content -->
+    <main class="max-w-4xl mx-auto px-4 py-6 pb-4 mt-[150px]">
+        <div class="mb-6">
+            <div class="relative">
+                <input type="text" id="search" placeholder="Buscar..." autocomplete="off" class="w-full pl-4 pr-20 py-3 rounded-lg focus:ring-2 focus:border-transparent" style="border: 1px solid var(--cor-borda) !important; --tw-ring-color: var(--cor-primaria) !important;">
+                <div class="absolute right-2 top-2 flex space-x-2">
+                    <button id="clear-search" class="hidden rounded-full w-8 h-8 flex items-center justify-center transition-colors" style="background-color: var(--cor-fundo-secundario) !important; color: var(--cor-texto-secundario) !important;" title="Limpar busca">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                    <button id="search-btn" class="rounded-full w-8 h-8 flex items-center justify-center transition-colors" style="background-color: var(--cor-primaria) !important; color: white !important;" title="Pesquisar">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="menu-content">
+            <!-- Menu sections will be populated here -->
+        </div>
+    </main>
+
+    <!-- Footer, Modals, etc. -->
+    <div id="gtranslate_wrapper"></div>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
